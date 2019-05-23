@@ -1,0 +1,32 @@
+<%= javascript_include_tag 'largetree' %>
+<%= javascript_include_tag 'tree_renderer' %>
+
+<h4><%= heading_text %></h4>
+<div class="infinite-tree-view largetree-container" id='tree-container'></div>
+
+<script>
+    var root_uri = '<%= app_prefix(root_node_uri) %>';
+    var should_link_to_record = true;
+
+    // YALE CUSTOMIZATION: Return the display string instead of calculating on the fly.
+    var renderer = new SimpleRenderer(should_link_to_record);
+    renderer.build_node_title = function (node) {
+        return node.display_string;
+    }
+
+    var tree = new LargeTree(new TreeDataSource(root_uri + '/tree'),
+        $('#tree-container'),
+        root_uri,
+        true,
+        renderer,
+        function() {
+            var tree_id = TreeIds.uri_to_tree_id('<%= current_node_uri %>');
+            tree.setCurrentNode(tree_id, function() {
+                // scroll to selected node
+                tree.elt.scrollTo('#'+tree_id, 0, {offset: -50});
+            });
+        },
+        function(current_node, tree) {
+          tree.expandNode(current_node);
+        });
+</script>

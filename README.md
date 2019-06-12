@@ -40,3 +40,14 @@ Here is a rundown of the major pieces:
     As noted above, this required a small enhancement to the
     ArchivesSpace core code.
 
+
+Optional configuration
+======================
+
+You can optionally control the separators used in display strings by
+setting the following configuration options.  The values shown are the
+defaults:
+
+     AppConfig[:series_separator] = ':'
+     AppConfig[:title_date_separator] = ','
+     AppConfig[:date_range_separator] = ' - '

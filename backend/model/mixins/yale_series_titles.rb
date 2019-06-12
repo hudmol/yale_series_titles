@@ -83,7 +83,7 @@ module YaleSeriesTitles
 
     # Separate our series label if there is one.
     unless display_string.to_s.empty?
-      display_string += ': '
+      display_string += (series_separator + ' ')
     end
 
     # If there's a title, add it now.
@@ -93,12 +93,16 @@ module YaleSeriesTitles
 
       # If we have some dates, separate them from the title.
       unless title_dates.empty?
-        # If the string ends on a double quote, we want our added comma to
-        # be inside the quotes.  Otherwise, at the end of the string.
-        if display_string.end_with?('"')
-          display_string = display_string.gsub(/"$/, ',"')
+        if title_date_separator == ','
+          # If the string ends on a double quote, we want our added comma to
+          # be inside the quotes.  Otherwise, at the end of the string.
+          if display_string.end_with?('"')
+            display_string = display_string.gsub(/"$/, ',"')
+          else
+            display_string += ','
+          end
         else
-          display_string += ','
+          display_string += title_date_separator
         end
 
         display_string += ' '
@@ -109,11 +113,23 @@ module YaleSeriesTitles
     display_string += title_dates.map {|date| YaleSeriesTitles.format_date(date)}.join(', ')
   end
 
+  def self.series_separator
+    AppConfig.has_key?(:series_separator) ? AppConfig[:series_separator] : ':'
+  end
+
+  def self.title_date_separator
+    AppConfig.has_key?(:title_date_separator) ? AppConfig[:title_date_separator] : ','
+  end
+
+  def self.date_range_separator
+    AppConfig.has_key?(:date_range_separator) ? AppConfig[:date_range_separator] : ' - '
+  end
+
   def self.format_date(date)
     if date['expression']
       date['expression']
     else
-      [date['begin'], date['end']].compact.join(' - ')
+      [date['begin'], date['end']].compact.join(date_range_separator)
     end
   end
 

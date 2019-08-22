@@ -23,7 +23,7 @@ class ArchivesSpaceService
       display_strings_by_uri = {}
 
       ArchivalObject.sequel_to_jsonmodel(ArchivalObject.filter(:id => record_ids).all).each do |json|
-        display_strings_by_uri[json.uri] = json.display_string
+        display_strings_by_uri[json.uri] = MixedContentParser.parse(json.display_string, '/')
       end
 
       response.each do |node|
